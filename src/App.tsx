@@ -4,7 +4,7 @@ import TodoTemplate from './components/TodoTemplate'
 import TodoHead from './components/TodoHead'
 import TodoList from './components/ToodList'
 import TodoCreate from './components/TodoCreate'
-import { TodoProvider } from './reducers/TodoContext'
+import { TodosContextProvider } from './contexts/TodoContext'
 
 
 const GlobalStyle = createGlobalStyle`
@@ -16,10 +16,10 @@ body{
 const App: React.FC = () => {
   return (
     <>
-      <TodoProvider>
+      <TodosContextProvider>
         <GlobalStyle />
         <TodoTemplate><TodoHead /><TodoList /><TodoCreate /></TodoTemplate>
-      </TodoProvider>
+      </TodosContextProvider>
     </>
   );
 }
