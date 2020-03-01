@@ -6,23 +6,33 @@ export type Todo = {
     done: Boolean
 }
 
+// 1. state 형태를 먼저 선언하고 createContext로 감싼다.
+
 type TodosState = Todo[]
 
 type TodosNextIdState = { current: number }
 
+
 const TodosStateContext = createContext<TodosState | undefined>(undefined)
+
+const TodosNextIdContext = createContext<TodosNextIdState | undefined>({ current: 5 })
+
+// 2. state의 action을 선언하고 Dispatch로 감싼다. 이를 다시 createContext로 감싼다.
+
 type Action =
     | { type: 'CREATE'; text: string }
     | { type: 'TOGGLE'; id: number }
     | { type: 'REMOVE'; id: number };
 
-const TodosNextIdContext = createContext<TodosNextIdState | undefined>({ current: 5 })
+
 
 type TodosDispatch = Dispatch<Action>
 
 const TodosDispatchContext = createContext<TodosDispatch | undefined>(
     undefined
 );
+
+
 
 const initialTodos = [
     {
@@ -47,6 +57,8 @@ const initialTodos = [
     }
 ]
 
+// 3. state와 Action에 대응하는 Reducer를 만든다.
+
 function todosReducer(state: TodosState, action: Action): TodosState {
     switch (action.type) {
         case 'CREATE':
@@ -67,6 +79,8 @@ function todosReducer(state: TodosState, action: Action): TodosState {
     }
 }
 
+// 4. Reducer로 감싸는 ContextProvider를 만든다.
+
 export function TodosContextProvider({ children }: { children: React.ReactNode }) {
     const [todos, dispatch] = useReducer(todosReducer, initialTodos);
     const nextId = useRef(5)
@@ -81,6 +95,9 @@ export function TodosContextProvider({ children }: { children: React.ReactNode }
         </TodosDispatchContext.Provider>
     );
 }
+
+// 5. 외부에서 사용할 수 있는 함수를 만든다.
+
 export function useTodosState() {
     const state = useContext(TodosStateContext);
     if (!state) throw new Error('TodosProvider not found');
